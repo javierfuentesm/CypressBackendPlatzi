@@ -1,0 +1,17 @@
+{
+  "name": "cypress_backend_platzi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run:server": "json-server --watch db.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^9.5.1",
+    "json-server": "^0.17.0",
+    "prettier": "^2.5.1"
+  }
+}
