@@ -12,6 +12,7 @@
   "devDependencies": {
     "cypress": "^9.5.1",
     "json-server": "^0.17.0",
+    "mongodb": "^4.4.1",
     "mysql": "^2.18.1",
     "prettier": "^2.5.1"
   }

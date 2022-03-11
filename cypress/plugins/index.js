@@ -9,6 +9,7 @@
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
 const mysql = require("mysql");
+const { MongoClient } = require("mongodb");
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
@@ -34,13 +35,53 @@ function queryTestDb(query, config) {
   });
 }
 
+async function connect(client) {
+  await client.connect();
+  return client.db("sample_airbnb");
+}
+
 // eslint-disable-next-line no-unused-vars
-module.exports = (on, config) => {
+module.exports = async (on, config) => {
+  const client = new MongoClient(config.env.mongo);
+
   on("task", {
     queryDb: (query) => {
       return queryTestDb(query, config);
     },
-  }); //For running sql query
+    async clearListing() {
+      try {
+        const db = await connect(client);
+        const listingsAndReviews = db.collection("listingsAndReviews");
+        return await listingsAndReviews.remove({});
+      } catch (error) {
+        console.error(error);
+      } finally {
+        await client.close();
+      }
+    },
+    async createList(list) {
+      try {
+        const db = await connect(client);
+        const listingsAndReviews = db.collection("listingsAndReviews");
+        return await listingsAndReviews.insertOne(list);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        await client.close();
+      }
+    },
+    async getListing() {
+      try {
+        const db = await connect(client);
+        const listingsAndReviews = db.collection("listingsAndReviews");
+        return await listingsAndReviews.find({}).limit(50).toArray();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        await client.close();
+      }
+    },
+  });
 
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
